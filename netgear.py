@@ -1,13 +1,17 @@
 from vidgear.gears import NetGear
 import cv2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # note: the IP address below is that of the client of the stream, 
 # which is actually the home server (the video stream server is the camera)
 
 options = {
     "protocol": "tcp",
-    "address": "192.168.0.123",
-    "port": "5454",
+    "address": os.environ["CLIENT_IP"],
+    "port": os.environ["CLIENT_PORT"],
     "receive_mode": True,
     "logging": True,
     "pattern": 1,

@@ -1,0 +1,4 @@
+vidgear[asyncio]==0.2.5
+picamera2
+python3-opencv
+python-dotenv==0.20.0
