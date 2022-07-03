@@ -1,6 +1,8 @@
-from vidgear.gears import NetGear
-import cv2
-import os
+from typing import AsyncGenerator
+from vidgear.gears.asyncio import NetGear_Async
+from vidgear.gears.asyncio.helper import reducer
+from vidgear.gears.asyncio import WebGear
+import os, cv2, asyncio, uvicorn
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,30 +22,42 @@ options = {
     "track": False
 }
 
-client = NetGear(**options)
+client = NetGear_Async(**options).launch()
 
-while True:
+async def main():
+    async for frame in client.recv_generator():
 
-    # receive frames from network
-    frame = client.recv()
+        # do something with received frame here
 
-    # check for received frame if Nonetype
-    if frame is None:
-        break
+        # Show output window (applicable only if not streaming elsewhere)
+        # cv2.imshow("Output Frame", frame)
+        # key = cv2.waitKey(1) & 0xFF
+    
+        # reducer frames size if you want more performance otherwise comment this line
+        frame = await reducer(
+            frame, percentage=30, interpolation=cv2.INTER_AREA
+        )  # reduce frame by 30%
 
-    # {do something with the received frame here}
+        # handle JPEG encoding
+        encodedImage = cv2.imencode(".jpg", frame)[1].tobytes()
+        # yield frame in byte format
+        yield (b"--frame\r\nContent-Type:image/jpeg\r\n\r\n" + encodedImage + b"\r\n")
+        await asyncio.sleep(0)
 
-    # Show output window
-    # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    cv2.imshow("Output Frame", frame)
+if __name__ == "__main__":
+    # set event loop to client
+    asyncio.set_event_loop(client.loop)
+    # initialize WebGear app without any source
+    web = WebGear(logging=True)
 
-    # check for 'q' key if pressed
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
-        break
+    # add your custom frame producer to config with adequate IP address
+    web.config["generator"] = main
 
-# close output window
-cv2.destroyAllWindows()
+    # run this app on Uvicorn server at address http://localhost:8000/
+    uvicorn.run(web(), host="localhost", port=8000)
 
-# safely close client
-client.close()
+    # safely close client
+    client.close()
+
+    # close app safely
+    web.shutdown()
