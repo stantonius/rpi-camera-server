@@ -1,0 +1,15 @@
+services:
+  camclient:
+    build: .
+    container_name: camclient
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+      - "5454:5454"
+    # network_mode: host
+    # networks:
+    #   # internal:
+    #   #   driver: bridge
+    #   external:
+    #     driver: host

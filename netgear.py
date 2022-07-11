@@ -12,7 +12,8 @@ load_dotenv()
 
 options = {
     "protocol": "tcp",
-    "address": os.environ["CLIENT_IP"],
+    # "address": os.environ["CLIENT_IP"],
+    "address": "0.0.0.0",
     "port": os.environ["CLIENT_PORT"],
     "receive_mode": True,
     "logging": True,
@@ -44,6 +45,8 @@ async def main():
         yield (b"--frame\r\nContent-Type:image/jpeg\r\n\r\n" + encodedImage + b"\r\n")
         await asyncio.sleep(0)
 
+
+
 if __name__ == "__main__":
     # set event loop to client
     asyncio.set_event_loop(client.loop)
@@ -54,7 +57,8 @@ if __name__ == "__main__":
     web.config["generator"] = main
 
     # run this app on Uvicorn server at address http://localhost:8000/
-    uvicorn.run(web(), host="localhost", port=8000)
+    # uvicorn.run(web(), host="127.0.0.1", port=8000)
+    uvicorn.run(web(), host="0.0.0.0", port=8000)
 
     # safely close client
     client.close()

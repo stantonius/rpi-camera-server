@@ -1,7 +1,7 @@
-vidgear[asyncio]==0.2.5
-picamera2
-python3-opencv
+uvloop
+opencv-python
+asyncio
+vidgear[asyncio]==0.2.6
 python-dotenv==0.20.0
 numpy
 uvicorn[standard]==0.18.2
-fastapi==0.78.0
