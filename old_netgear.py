@@ -1,7 +1,6 @@
 from typing import AsyncGenerator
-from vidgear.gears.asyncio import NetGear_Async
+from vidgear.gears.asyncio import NetGear_Async, WebGear
 from vidgear.gears.asyncio.helper import reducer
-from vidgear.gears.asyncio import WebGear
 import os, cv2, asyncio, uvicorn
 from dotenv import load_dotenv
 
@@ -22,6 +21,14 @@ options = {
     "copy": False,
     "track": False
 }
+
+webgear_options = {
+    "frame_size_reduction": 40,
+    "jpeg_compression_quality": 80,
+    "jpeg_compression_fastdct": True,
+    "jpeg_compression_fastupsample": False,
+    "framerate": 60, 
+    }
 
 client = NetGear_Async(**options).launch()
 
@@ -51,7 +58,7 @@ if __name__ == "__main__":
     # set event loop to client
     asyncio.set_event_loop(client.loop)
     # initialize WebGear app without any source
-    web = WebGear(logging=True)
+    web = WebGear(logging=True, **webgear_options)
 
     # add your custom frame producer to config with adequate IP address
     web.config["generator"] = main
