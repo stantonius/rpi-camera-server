@@ -6,10 +6,17 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-      - "5454:5454"
     # network_mode: host
     # networks:
     #   # internal:
     #   #   driver: bridge
     #   external:
     #     driver: host
+
+  webserver:
+    build: .
+    container_name: webserver
+    volumes:
+      - .:/code
+    ports:
+      - "8080:8080"
