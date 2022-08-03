@@ -7,8 +7,8 @@ ENV PYTHONUNBUFFERED 1
 # install opencv dependencies typically on local machine
 RUN apt-get update && apt-get install libgl1 -y
 
-EXPOSE 8000
-EXPOSE 5454
+EXPOSE 5566
+EXPOSE 80
 
 RUN python -m pip install pip --upgrade
 
@@ -20,4 +20,5 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 # this makes building faster
 COPY . /code/
 
-CMD python netgear.py
+# CMD python webserver.py
+CMD watchmedo auto-restart --pattern "*.py" --recursive --signal SIGTERM python webserver.py

@@ -1,12 +1,16 @@
 services:
   camclient:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.client
     container_name: camclient
     volumes:
       - .:/code
     ports:
       - "8000:8000"
-    # network_mode: host
+      - "5555:5555"
+      # - "5566:5566"
+    network_mode: host
     # networks:
     #   # internal:
     #   #   driver: bridge
@@ -14,9 +18,16 @@ services:
     #     driver: host
 
   webserver:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.webserver
     container_name: webserver
     volumes:
       - .:/code
     ports:
-      - "8080:8080"
+      - "5566:5566"
+      - "80:80"
+    network_mode: "host"
+
+# networks:
+#   camnetwork:

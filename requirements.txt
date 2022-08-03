@@ -1,4 +1,6 @@
 opencv-python
 python-dotenv==0.20.0
 numpy
-uvicorn[standard]==0.18.2
+imagezmq==1.1.1
+Flask==2.2.0
+watchdog[watchmedo]==2.1.9

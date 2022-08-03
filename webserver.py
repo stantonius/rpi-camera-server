@@ -5,6 +5,7 @@ from werkzeug.serving import run_simple
 
 def sendImagesToWeb():
     # When we have incoming request, create a receiver and subscribe to a publisher
+    # receiver = imagezmq.ImageHub(open_port='tcp://localhost:5566', REQ_REP = False)
     receiver = imagezmq.ImageHub(open_port='tcp://localhost:5566', REQ_REP = False)
     while True:
         # Pull an image from the queue
@@ -24,4 +25,5 @@ def application(request):
 
 if __name__ == '__main__':
     # This code starts simple HTTP server that listens on interface with IP 192.168.0.114, port 4000
-    run_simple('127.0.0.1', 4000, application)
+    # run_simple('127.0.0.1', 80, application)
+    run_simple('localhost', 80, application)
