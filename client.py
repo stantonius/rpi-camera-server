@@ -7,16 +7,20 @@ def process_image(image):
     pass
 
 # the hub that receives the incoming images
-image_hub = imagezmq.ImageHub(open_port='tcp://localhost:5555', REQ_REP = False)
+image_hub = imagezmq.ImageHub()
 
-print(f"HOSTNAME IS {socket.gethostbyname(socket.gethostname())}")
+this_ip = socket.gethostbyname(socket.gethostname())
+resolved_ip_from_name = socket.gethostbyname('webserver')
+
+print("This IP: {}".format(this_ip))
+print("Resolved IP from name: {}".format(resolved_ip_from_name))
 
 # Create a PUB server to send images for monitoring purposes in a non-blocking mode
-stream_monitor = imagezmq.ImageSender(connect_to = 'tcp://127.0.0.1:5566', REQ_REP = False)
+# stream_monitor = imagezmq.ImageSender(connect_to = 'tcp://127.0.0.1:5566', REQ_REP = False)
+stream_monitor = imagezmq.ImageSender(connect_to = f'tcp://*:5566', REQ_REP = False)
 
 while True:  # show streamed images until Ctrl-C
     rpi_name, image = image_hub.recv_image()
-    print(rpi_name)
     image_hub.send_reply(b'OK')
 
     # do any manipulation, inference, etc.

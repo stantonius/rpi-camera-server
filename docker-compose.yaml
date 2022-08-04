@@ -1,21 +1,25 @@
 services:
   camclient:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.client
     container_name: camclient
     volumes:
       - .:/code
     ports:
-      - "8000:8000"
       - "5555:5555"
-      # - "5566:5566"
-    network_mode: host
-    # networks:
-    #   # internal:
-    #   #   driver: bridge
-    #   external:
-    #     driver: host
+      # network_mode: host
+      # networks:
+      #   # internal:
+      #   #   driver: bridge
+      #   external:
+      #     driver: host
+    networks:
+      - camnetwork
+    # command: sh -c 'wget -qO- https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for | sh -s -- http://webserver:80'
+    # depends_on:
+    #   webserver:
+    #     condition: service_healthy
 
   webserver:
     build:
@@ -26,8 +30,17 @@ services:
       - .:/code
     ports:
       - "5566:5566"
-      - "80:80"
-    network_mode: "host"
+      - "81:80"
+    # network_mode: "host"
+    networks:
+      - camnetwork
+    # healthcheck:
+    #   test: [ "CMD", "curl", "-f", "http://localhost:80" ]
+    #   # interval: 1m30s
+    #   # timeout: 30s
+    #   # retries: 5
+    #   start_period: 5s
 
-# networks:
-#   camnetwork:
+networks:
+  camnetwork:
+    name: camnetwork

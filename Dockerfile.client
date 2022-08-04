@@ -20,5 +20,5 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 # this makes building faster
 COPY . /code/
 
-CMD python client.py
-# CMD watchmedo auto-restart --pattern "*.py" --recursive --signal SIGTERM python client.py
+# CMD python client.py
+CMD watchmedo auto-restart --pattern "*.py" --recursive --signal SIGTERM python client.py
