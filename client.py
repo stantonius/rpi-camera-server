@@ -9,14 +9,9 @@ def process_image(image):
 # the hub that receives the incoming images
 image_hub = imagezmq.ImageHub()
 
-this_ip = socket.gethostbyname(socket.gethostname())
-resolved_ip_from_name = socket.gethostbyname('webserver')
-
-print("This IP: {}".format(this_ip))
-print("Resolved IP from name: {}".format(resolved_ip_from_name))
-
 # Create a PUB server to send images for monitoring purposes in a non-blocking mode
-# stream_monitor = imagezmq.ImageSender(connect_to = 'tcp://127.0.0.1:5566', REQ_REP = False)
+# NOTE: we do not specify any IP address other than localhost (or '*'). As is standard with ZMQ, it is
+# the RECEIVER that is responsible for binding to the correct IP address.
 stream_monitor = imagezmq.ImageSender(connect_to = f'tcp://*:5566', REQ_REP = False)
 
 while True:  # show streamed images until Ctrl-C

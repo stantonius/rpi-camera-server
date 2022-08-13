@@ -30,7 +30,7 @@ services:
       - .:/code
     ports:
       - "5566:5566"
-      - "81:80"
+      - "80:80"
     # network_mode: "host"
     networks:
       - camnetwork

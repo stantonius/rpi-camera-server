@@ -3,14 +3,13 @@ import cv2, imagezmq, socket
 from werkzeug.serving import run_simple
 from flask import Flask, render_template, Response
 
-this_ip = socket.gethostbyname(socket.gethostname())
 resolved_ip_from_name = socket.gethostbyname('camclient')
 
 app = Flask(__name__)
 
 def sendImagesToWeb():
     # When we have incoming request, create a receiver and subscribe to a publisher
-    # receiver = imagezmq.ImageHub(open_port='tcp://localhost:5566', REQ_REP = False)
+    # NOTE: it seems strange, but we need to specify the IP address of the PUBLISHER
     receiver = imagezmq.ImageHub(open_port=f'tcp://{resolved_ip_from_name}:5566', REQ_REP = False)
     while True:
         # Pull an image from the queue
@@ -18,7 +17,6 @@ def sendImagesToWeb():
         # Using OpenCV library create a JPEG image from the frame we have received
         jpg = cv2.imencode('.jpg', frame)[1]
         # Convert this JPEG image into a binary string that we can send to the browser via HTTP
-        # yield b'--frame\r\nContent-Type:image/jpeg\r\n\r\n'+jpg.tostring()+b'\r\n'
         yield b'--frame\r\nContent-Type:image/jpeg\r\n\r\n'+jpg.tobytes()+b'\r\n'
 
 
